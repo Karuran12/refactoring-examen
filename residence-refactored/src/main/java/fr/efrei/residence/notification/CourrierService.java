@@ -1,9 +1,11 @@
 package fr.efrei.residence.notification;
 
+import fr.efrei.residence.etudiant.Etudiant;
+import fr.efrei.residence.util.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourrierService {
+public class CourrierService implements CanalNotification {
 
     public static final double PRIX_TIMBRE = 1.29;
     public static double totalAffranchissement = 0;
@@ -15,4 +17,16 @@ public class CourrierService {
         System.out.println("[COURRIER] " + nom + ", " + adresse + " | Objet : " + objet);
         System.out.println("        " + texte);
     }
+
+    @Override
+    public void notifier(Etudiant e, String sujet, String message) {
+        imprimerEtPoster(e.getNomComplet(), e.getAdresse(), sujet, message);
+    }
+
+    @Override
+    public void relancer(Etudiant e, double montantDu, String idBail) {
+        imprimerEtPoster(e.getNomComplet(), e.getAdresse(), "Relance loyer impayé",
+                "Il reste " + Utils.euros(montantDu) + " à régler sur le bail " + idBail + ".");
+    }
+
 }

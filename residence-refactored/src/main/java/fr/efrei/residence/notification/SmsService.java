@@ -1,9 +1,11 @@
 package fr.efrei.residence.notification;
 
+import fr.efrei.residence.etudiant.Etudiant;
+import fr.efrei.residence.util.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SmsService {
+public class SmsService implements CanalNotification {
 
     private static final int LONGUEUR_MIN_NUMERO = 10;
     private static final int LONGUEUR_MAX_SMS = 160;
@@ -24,4 +26,15 @@ public class SmsService {
         journal.add(new String[]{numero, message});
         System.out.println("[SMS] -> " + numero + " : " + message);
     }
+
+    @Override
+    public void notifier(Etudiant e, String sujet, String message) {
+        envoyerSms(e.getTelephone(), sujet + " - " + message);
+    }
+
+    @Override
+    public void relancer(Etudiant e, double montantDu, String idBail) {
+        envoyerSms(e.getTelephone(), "Campus Vert : " + Utils.euros(montantDu) + " impayés sur " + idBail);
+    }
+
 }
