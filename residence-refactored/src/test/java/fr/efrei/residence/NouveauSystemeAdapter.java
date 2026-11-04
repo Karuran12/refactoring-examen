@@ -50,14 +50,14 @@ public class NouveauSystemeAdapter implements SystemeResidence {
     @Override
     public Optional<String> inscrire(DemandeInscription d) {
         Etudiant e = gestion.inscrireEtudiant(d.nom(), d.prenom(), d.email(), d.telephone(), d.adresse(),
-                d.profil().name(), d.echelonBourse(), d.ressourcesMensuelles(), d.pmr(), d.canalPrefere().name());
+        versNotreProfil(d.profil()), d.echelonBourse(), d.ressourcesMensuelles(), d.pmr(), versNotreCanal(d.canalPrefere()));
         return Optional.ofNullable(e).map(Etudiant::getId);
     }
 
     @Override
     public boolean ajouterLogement(DemandeLogement d) {
         int param = d.type() == TypeLogement.COLOCATION ? d.places() : d.surfaceBalcon();
-        return gestion.ajouterLogement(d.type().name(), d.numero(), d.surface(), d.etage(), d.meuble(), param) != null;
+        return gestion.ajouterLogement(versNotreType(d.type()), d.numero(), d.surface(), d.etage(), d.meuble(), param) != null;
     }
 
     @Override
@@ -72,8 +72,7 @@ public class NouveauSystemeAdapter implements SystemeResidence {
         } else {
             occupants = l.estLibre() ? 0 : 1;
         }
-        return Optional.of(new EtatLogement(l.getNumero(), TypeLogement.valueOf(l.getType()), l.getNombrePlaces(),
-                occupants, l.estAccessiblePMR()));
+        return Optional.of(new EtatLogement(l.getNumero(), versTypeDuContrat(l.getType()), l.getNombrePlaces(), occupants, l.estAccessiblePMR()));
     }
 
     @Override
@@ -83,7 +82,7 @@ public class NouveauSystemeAdapter implements SystemeResidence {
             return OptionalDouble.empty();
         }
         Set<Option> o = d.options();
-        return OptionalDouble.of(new CalculateurLoyer().calculerLoyer(l, d.profil().name(), d.echelonBourse(),
+        return OptionalDouble.of(new CalculateurLoyer().calculerLoyer(l, versNotreProfil(d.profil()), d.echelonBourse(),
                 o.contains(Option.PARKING), o.contains(Option.MENAGE), o.contains(Option.LAVERIE),
                 o.contains(Option.FIBRE), o.contains(Option.ASSURANCE)));
     }
@@ -95,7 +94,7 @@ public class NouveauSystemeAdapter implements SystemeResidence {
             return Optional.empty();
         }
         Set<Option> o = d.options();
-        Bail b = gestion.attribuerLogement(e, d.type().name(), o.contains(Option.PARKING), o.contains(Option.MENAGE),
+        Bail b = gestion.attribuerLogement(e, versNotreType(d.type()), o.contains(Option.PARKING), o.contains(Option.MENAGE), 
                 o.contains(Option.LAVERIE), o.contains(Option.FIBRE), o.contains(Option.ASSURANCE), d.dateSignature());
         return Optional.ofNullable(b).map(Bail::getId);
     }
@@ -106,7 +105,7 @@ public class NouveauSystemeAdapter implements SystemeResidence {
         if (b == null) {
             return Optional.empty();
         }
-        return Optional.of(new EtatBail(b.getId(), b.getLogement().getNumero(), StatutBail.valueOf(b.getStatut()),
+        return Optional.of(new EtatBail(b.getId(), b.getLogement().getNumero(), versStatutDuContrat(b.getStatut()),
                 b.getLoyerHorsCharges(), b.getCharges(), b.getLoyerChargesComprises(), b.getCaution(),
                 b.getFraisDossier(), b.getDateFin(), b.soldeDu, b.cautionRestituee));
     }
@@ -171,5 +170,26 @@ public class NouveauSystemeAdapter implements SystemeResidence {
             if (e.getId().equals(ref)) return e;
         }
         return null;
+    }
+
+    private static fr.efrei.residence.TypeLogement versNotreType(TypeLogement type) {
+        return fr.efrei.residence.TypeLogement.valueOf(type.name());
+    }
+
+    private static TypeLogement versTypeDuContrat(fr.efrei.residence.TypeLogement type) {
+        return TypeLogement.valueOf(type.name());
+    }
+
+    private static Profil versNotreProfil(fr.efrei.residence.contrat.Profil profil) {
+        return Profil.valueOf(profil.name());
+    }
+
+    private static fr.efrei.residence.Canal versNotreCanal(Canal canal) {
+        return fr.efrei.residence.Canal.valueOf(canal.name());
+    }
+
+
+    private static StatutBail versStatutDuContrat(fr.efrei.residence.StatutBail statut) {
+        return StatutBail.valueOf(statut.name());
     }
 }
