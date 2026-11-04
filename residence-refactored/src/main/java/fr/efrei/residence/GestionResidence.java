@@ -3,6 +3,25 @@ package fr.efrei.residence;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import fr.efrei.residence.bail.Bail;
+import fr.efrei.residence.bail.Paiement;
+import fr.efrei.residence.bail.StatutBail;
+import fr.efrei.residence.etudiant.Etudiant;
+import fr.efrei.residence.etudiant.Profil;
+import fr.efrei.residence.logement.Colocation;
+import fr.efrei.residence.logement.Logement;
+import fr.efrei.residence.logement.Residence;
+import fr.efrei.residence.logement.Studio;
+import fr.efrei.residence.logement.T1;
+import fr.efrei.residence.logement.T2;
+import fr.efrei.residence.logement.TypeLogement;
+import fr.efrei.residence.loyer.CalculateurLoyer;
+import fr.efrei.residence.notification.Canal;
+import fr.efrei.residence.notification.CourrierService;
+import fr.efrei.residence.notification.EmailService;
+import fr.efrei.residence.notification.SmsService;
+import fr.efrei.residence.persistance.Database;
+import fr.efrei.residence.util.Utils;
 
 /**
  * Service principal de la résidence : inscriptions, attributions, baux, loyers, préavis, sorties.

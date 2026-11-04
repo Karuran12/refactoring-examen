@@ -1,6 +1,7 @@
-package fr.efrei.residence;
+package fr.efrei.residence.logement;
 
 import java.util.List;
+import fr.efrei.residence.etudiant.Etudiant;
 
 /**
  * Tout ce qu'on peut faire avec un logement de la résidence.

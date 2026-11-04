@@ -1,4 +1,4 @@
-package fr.efrei.residence;
+package fr.efrei.residence.notification;
 
 /**
  * Les canaux de notification qu'un étudiant peut choisir.

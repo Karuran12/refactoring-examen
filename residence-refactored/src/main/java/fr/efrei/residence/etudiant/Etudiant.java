@@ -1,4 +1,6 @@
-package fr.efrei.residence;
+package fr.efrei.residence.etudiant;
+
+import fr.efrei.residence.notification.Canal;
 
 public class Etudiant {
 

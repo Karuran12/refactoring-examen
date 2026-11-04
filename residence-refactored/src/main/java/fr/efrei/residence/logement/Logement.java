@@ -1,4 +1,6 @@
-package fr.efrei.residence;
+package fr.efrei.residence.logement;
+
+import fr.efrei.residence.etudiant.Etudiant;
 
 public abstract class Logement implements ILogement {
 

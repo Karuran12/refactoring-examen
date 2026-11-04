@@ -1,5 +1,6 @@
-package fr.efrei.residence;
+package fr.efrei.residence.notification;
 
+import fr.efrei.residence.util.Utils;
 import java.util.ArrayList;
 import java.util.List;
 

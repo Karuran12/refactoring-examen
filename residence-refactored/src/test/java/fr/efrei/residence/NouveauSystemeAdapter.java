@@ -1,5 +1,17 @@
 package fr.efrei.residence;
 
+import fr.efrei.residence.bail.Bail;
+import fr.efrei.residence.etudiant.Etudiant;
+import fr.efrei.residence.etudiant.Profil;
+import fr.efrei.residence.logement.Colocation;
+import fr.efrei.residence.logement.Logement;
+import fr.efrei.residence.logement.Residence;
+import fr.efrei.residence.loyer.CalculateurLoyer;
+import fr.efrei.residence.notification.CourrierService;
+import fr.efrei.residence.notification.EmailService;
+import fr.efrei.residence.notification.SmsService;
+import fr.efrei.residence.persistance.Database;
+
 import fr.efrei.residence.contrat.Canal;
 import fr.efrei.residence.contrat.DemandeAttribution;
 import fr.efrei.residence.contrat.DemandeDevis;
@@ -172,11 +184,11 @@ public class NouveauSystemeAdapter implements SystemeResidence {
         return null;
     }
 
-    private static fr.efrei.residence.TypeLogement versNotreType(TypeLogement type) {
-        return fr.efrei.residence.TypeLogement.valueOf(type.name());
+    private static fr.efrei.residence.logement.TypeLogement versNotreType(TypeLogement type) {
+        return fr.efrei.residence.logement.TypeLogement.valueOf(type.name());
     }
 
-    private static TypeLogement versTypeDuContrat(fr.efrei.residence.TypeLogement type) {
+    private static TypeLogement versTypeDuContrat(fr.efrei.residence.logement.TypeLogement type) {        
         return TypeLogement.valueOf(type.name());
     }
 
@@ -184,12 +196,11 @@ public class NouveauSystemeAdapter implements SystemeResidence {
         return Profil.valueOf(profil.name());
     }
 
-    private static fr.efrei.residence.Canal versNotreCanal(Canal canal) {
-        return fr.efrei.residence.Canal.valueOf(canal.name());
+    private static fr.efrei.residence.notification.Canal versNotreCanal(Canal canal) {
+        return fr.efrei.residence.notification.Canal.valueOf(canal.name());    
     }
 
-
-    private static StatutBail versStatutDuContrat(fr.efrei.residence.StatutBail statut) {
+    private static StatutBail versStatutDuContrat(fr.efrei.residence.bail.StatutBail statut) {
         return StatutBail.valueOf(statut.name());
     }
 }

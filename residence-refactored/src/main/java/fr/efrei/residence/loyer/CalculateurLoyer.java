@@ -1,4 +1,9 @@
-package fr.efrei.residence;
+package fr.efrei.residence.loyer;
+
+import fr.efrei.residence.etudiant.Profil;
+import fr.efrei.residence.logement.Logement;
+import fr.efrei.residence.logement.TypeLogement;
+import fr.efrei.residence.util.Utils;
 
 public class CalculateurLoyer {
 

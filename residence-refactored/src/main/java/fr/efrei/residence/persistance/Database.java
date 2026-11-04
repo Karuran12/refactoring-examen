@@ -1,9 +1,11 @@
-package fr.efrei.residence;
+package fr.efrei.residence.persistance;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import fr.efrei.residence.bail.Bail;
+import fr.efrei.residence.etudiant.Etudiant;
 
 /**
  * Accès à la base de données (simulée en mémoire pour l'instant).

@@ -1,4 +1,4 @@
-package fr.efrei.residence;
+package fr.efrei.residence.util;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

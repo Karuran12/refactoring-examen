@@ -1,5 +1,8 @@
-package fr.efrei.residence;
+package fr.efrei.residence.bail;
 
+import fr.efrei.residence.etudiant.Etudiant;
+import fr.efrei.residence.logement.Logement;
+import fr.efrei.residence.util.Utils;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

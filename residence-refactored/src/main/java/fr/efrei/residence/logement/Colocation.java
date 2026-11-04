@@ -1,7 +1,8 @@
-package fr.efrei.residence;
+package fr.efrei.residence.logement;
 
 import java.util.ArrayList;
 import java.util.List;
+import fr.efrei.residence.etudiant.Etudiant;
 
 public class Colocation extends Logement {
 

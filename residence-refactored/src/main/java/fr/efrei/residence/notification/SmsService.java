@@ -1,4 +1,4 @@
-package fr.efrei.residence;
+package fr.efrei.residence.notification;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package fr.efrei.residence;
+package fr.efrei.residence.bail;
 
 import java.time.LocalDate;
 

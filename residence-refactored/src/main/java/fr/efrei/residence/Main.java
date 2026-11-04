@@ -1,6 +1,12 @@
 package fr.efrei.residence;
 
 import java.time.LocalDate;
+import fr.efrei.residence.bail.Bail;
+import fr.efrei.residence.etudiant.Etudiant;
+import fr.efrei.residence.etudiant.Profil;
+import fr.efrei.residence.logement.Residence;
+import fr.efrei.residence.logement.TypeLogement;
+import fr.efrei.residence.notification.Canal;
 
 public class Main {
 

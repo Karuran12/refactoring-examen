@@ -1,4 +1,4 @@
-package fr.efrei.residence;
+package fr.efrei.residence.logement;
 
 /**
  * Les types de logement de la résidence.

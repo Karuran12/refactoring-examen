@@ -1,4 +1,4 @@
-package fr.efrei.residence;
+package fr.efrei.residence.bail;
 
 /**
  * Les étapes du cycle de vie d'un bail.
