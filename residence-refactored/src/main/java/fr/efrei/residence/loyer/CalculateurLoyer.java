@@ -23,7 +23,8 @@ public class CalculateurLoyer {
         if (options.contains(Option.LAVERIE)) loyer = new DecorateurLaverie(loyer);
         if (options.contains(Option.FIBRE) && !tarif.fibreIncluse()) loyer = new DecorateurFibre(loyer);
         if (options.contains(Option.ASSURANCE)) loyer = new DecorateurAssurance(loyer);
-
+        if (options.contains(Option.VELO)) loyer = new DecorateurVelo(loyer);
+        
         loyer = new DecorateurRemise(loyer, FabriqueStrategieProfil.creer(profil), echelon);
 
         return Utils.arrondir(loyer.montant());

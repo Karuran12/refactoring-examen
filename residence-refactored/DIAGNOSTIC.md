@@ -87,3 +87,31 @@ accepté et l'étudiant ne reçoit ensuite aucune notification, sans aucune erre
 - Deux comportements ne sont couverts par aucun test: un international ne reçoit pas l'email `[EN]` lors d'une
   relance (seul `Main` le montre) et un étudiant SMS avec un numéro trop court est inscrit mais ne reçoit aucun
   SMS. Le refactoring doit les conserver, mais c'est une bonne question sur ce que couvrent les tests.
+
+
+## 7) Palier 7 – Preuve par l'extension
+
+| Extension        | Nouvelles classes        | Fichiers existants modifiés                                                                                        |
+|------------------|--------------------------|--------------------------------------------------------------------------------------------------------------------|
+| Type `DUPLEX`    | `Duplex`, `TarifDuplex`  | `TypeLogement` (+1 valeur), `FabriqueLogement` (+1 `case`), `FabriqueStrategieTarif` (+1 `case`), `GenerateurRapport` (+1 ligne) |
+| Option vélo      | `DecorateurVelo`         | `Option` (+1 valeur), `CalculateurLoyer` (+1 ligne dans l'assemblage)                                              |
+| Profil `SPORTIF` | `ProfilSportif`          | `Profil` (+1 valeur), `FabriqueStrategieProfil` (+1 `case`)                                                        |
+| Canal `PUSH`     | `PushService`            | `Canal` (+1 valeur), `FabriqueCanal` (+1 champ, +1 `case`, +1 getter)                                              |
+
+Tests unitaires ajoutés: `DuplexTest`, `DecorateurVeloTest`, `ProfilSportifTest` et `PushServiceTest` (15 tests).
+Les 101 tests de contrat restent verts.
+
+**Bilan: 10 fichiers existants modifiés**, tous des points d'extension: 4 enums (une valeur chacune), 4 fabriques
+(un `case` chacune), l'assemblage du loyer (une ligne) et le rapport (une ligne). Aucun service, aucun décorateur
+et aucune stratégie existante n'a été modifié et aucune signature n'a changé. Dans le legacy (sections 2 à 5), il
+fallait aussi 10 modifications de fichiers, mais au cœur de `GestionResidence` et de `CalculateurLoyer`, avec des
+signatures rallongées et des oublis silencieux. Ici, un `case` oublié dans une fabrique ne compile pas: le `switch`
+sur l'enum doit couvrir toutes les valeurs.
+
+La seule modification hors assemblage est dans `GenerateurRapport`: il affichait une ligne pour chaque valeur de
+`TypeLogement`, même absente du parc. Une ligne "Duplex: 0/0" aurait cassé le rapport du contrat. Il n'affiche
+plus que les types présents, donc le prochain type de logement n'y touchera plus.
+
+`Main` n'a pas changé: il essayait déjà d'ajouter un duplex. Sa sortie diffère maintenant du legacy à deux
+endroits et c'est voulu: `Logement ajouté: C003 (DUPLEX)` au lieu de `Type de logement inconnu: DUPLEX` et
+une ligne `Duplex: 0/1` dans le rapport.

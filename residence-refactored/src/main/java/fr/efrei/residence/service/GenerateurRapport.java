@@ -38,6 +38,7 @@ public class GenerateurRapport {
                 places += l.getNombrePlaces();
                 occupants += l.getNombreOccupants();
             }
+            if (places == 0) continue;
             r += String.format("%-13s", type.getLibelle()) + ": " + occupants + "/" + places + type.getUnite() + "\n";
             total += places;
             occupes += occupants;

@@ -5,7 +5,8 @@ public enum Option {
     PARKING("parking"),
     LAVERIE("laverie"),
     FIBRE("fibre"),
-    ASSURANCE("assurance");
+    ASSURANCE("assurance"),
+    VELO("local vélo");
 
     private final String libelle;
 

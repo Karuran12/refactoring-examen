@@ -10,6 +10,7 @@ public class FabriqueStrategieTarif {
             case T1 -> new TarifT1();
             case T2 -> new TarifT2();
             case COLOCATION -> new TarifColocation();
+            case DUPLEX -> new TarifDuplex();        
         };
     }
 }

@@ -7,7 +7,8 @@ public enum TypeLogement {
     STUDIO("Studios", ""),
     T1("T1", ""),
     T2("T2", ""),
-    COLOCATION("Colocation", " places");
+    COLOCATION("Colocation", " places"),
+    DUPLEX("Duplex", "");
 
     private final String libelle;
     private final String unite;

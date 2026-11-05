@@ -13,6 +13,7 @@ public class FabriqueStrategieProfil {
             case BOURSIER -> new ProfilBoursier();
             case ALTERNANT -> new ProfilAlternant();
             case INTERNATIONAL -> new ProfilInternational();
+            case SPORTIF -> new ProfilSportif();
         };
     }
 }

@@ -13,6 +13,7 @@ public class FabriqueLogement {
             case T1 -> new T1(numero, surface, etage, meuble);
             case T2 -> new T2(numero, surface, etage, meuble, param);
             case COLOCATION -> new Colocation(numero, surface, etage, meuble, Math.max(param, PLACES_MIN_COLOCATION));
+            case DUPLEX -> new Duplex(numero, surface, etage, meuble);        
         };
     }
 }
