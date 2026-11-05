@@ -2,10 +2,12 @@ package fr.efrei.residence.bail;
 
 import fr.efrei.residence.etudiant.Etudiant;
 import fr.efrei.residence.logement.Logement;
+import fr.efrei.residence.loyer.Option;
 import fr.efrei.residence.util.Utils;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Bail {
 
@@ -22,11 +24,7 @@ public class Bail {
     private double caution;
     private double fraisDossier;
 
-    public boolean parking;
-    public boolean menage;
-    public boolean laverie;
-    public boolean fibre;
-    public boolean assurance;
+    private Set<Option> options = Set.of();
 
     public List<Paiement> paiements = new ArrayList<Paiement>();
     public double soldeDu = 0;
@@ -60,14 +58,13 @@ public class Bail {
     public void setCaution(double c) { this.caution = c; }
     public double getFraisDossier() { return fraisDossier; }
     public void setFraisDossier(double f) { this.fraisDossier = f; }
+    public void setOptions(Set<Option> options) { this.options = Set.copyOf(options); }
 
     public String listerOptions() {
         String s = "";
-        if (menage) s = s + "ménage, ";
-        if (parking) s = s + "parking, ";
-        if (laverie) s = s + "laverie, ";
-        if (fibre) s = s + "fibre, ";
-        if (assurance) s = s + "assurance, ";
+        for (Option option : Option.values()) {
+            if (options.contains(option)) s = s + option.getLibelle() + ", ";
+        }
         if (s.length() == 0) return "aucune";
         return s.substring(0, s.length() - 2);
     }

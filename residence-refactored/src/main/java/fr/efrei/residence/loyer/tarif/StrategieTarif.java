@@ -1,11 +1,7 @@
-package fr.efrei.residence.loyer;
+package fr.efrei.residence.loyer.tarif;
 
 import fr.efrei.residence.logement.Logement;
 
-/**
- * Stratégie : le tarif propre à chaque type de logement.
- * Cette classe contient les règles communes. Chaque type redéfinit seulement ce qui change pour lui.
- */
 public abstract class StrategieTarif {
 
     private static final double COEF_MENAGE = 1.08;

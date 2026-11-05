@@ -1,10 +1,7 @@
-package fr.efrei.residence.loyer;
+package fr.efrei.residence.loyer.tarif;
 
 import fr.efrei.residence.logement.Logement;
 
-/**
- * Colocation : prix au m² partagé entre les places, ménage moins cher, fibre incluse, charges réduites.
- */
 public class TarifColocation extends StrategieTarif {
 
     private static final double PRIX_M2_COLOCATION = 11;

@@ -1,10 +1,7 @@
-package fr.efrei.residence.loyer;
+package fr.efrei.residence.loyer.tarif;
 
 import fr.efrei.residence.logement.TypeLogement;
 
-/**
- * Seul endroit qui choisit le tarif selon le type de logement.
- */
 public class FabriqueStrategieTarif {
 
     public static StrategieTarif creer(TypeLogement type) {

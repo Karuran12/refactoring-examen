@@ -1,10 +1,7 @@
-package fr.efrei.residence.loyer;
+package fr.efrei.residence.loyer.tarif;
 
 import fr.efrei.residence.logement.Logement;
 
-/**
- * T1 : prix au m² plus un forfait.
- */
 public class TarifT1 extends StrategieTarif {
 
     private static final double PRIX_M2_T1 = 13;

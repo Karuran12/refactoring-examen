@@ -2,44 +2,31 @@ package fr.efrei.residence.loyer;
 
 import fr.efrei.residence.etudiant.Profil;
 import fr.efrei.residence.logement.Logement;
+import fr.efrei.residence.loyer.decorateur.*;
+import fr.efrei.residence.loyer.tarif.FabriqueStrategieTarif;
+import fr.efrei.residence.loyer.tarif.StrategieTarif;
 import fr.efrei.residence.profil.FabriqueStrategieProfil;
 import fr.efrei.residence.util.Utils;
+import java.util.Set;
 
 public class CalculateurLoyer {
 
-    
-        private static final double COEF_MEUBLE = 1.15;
-        private static final double COEF_REZ_DE_CHAUSSEE = 0.95;
-    
-        private static final double PRIX_PARKING = 45;
-        private static final double PRIX_LAVERIE = 12;
-        private static final double PRIX_FIBRE = 20;
-        private static final double PRIX_ASSURANCE = 9;
-    
-
-    /**
-     * Loyer mensuel hors charges, options comprises, remise déduite.
-     */
-    public double calculerLoyer(Logement l, Profil profil, int echelon, boolean parking, boolean menage,
-                                boolean laverie, boolean fibre, boolean assurance) {
-        // loyer de base selon le type
+    public double calculerLoyer(Logement l, Profil profil, int echelon, Set<Option> options) {
         StrategieTarif tarif = FabriqueStrategieTarif.creer(l.getType());
-        double loyer = tarif.loyerDeBase(l);
+        Loyer loyer = new LoyerDeBase(l, tarif);
 
-        if (l.isMeuble()) loyer = loyer * COEF_MEUBLE;
-        if (l.getEtage() == Logement.REZ_DE_CHAUSSEE) loyer = loyer * COEF_REZ_DE_CHAUSSEE;
+        if (l.isMeuble()) loyer = new DecorateurMeuble(loyer);
+        if (l.getEtage() == Logement.REZ_DE_CHAUSSEE) loyer = new DecorateurRezDeChaussee(loyer);
 
-        // options
-        if (menage) loyer = loyer * tarif.coefMenage();
-        if (parking) loyer = loyer + PRIX_PARKING;
-        if (laverie) loyer = loyer + PRIX_LAVERIE;
-        if (fibre && !tarif.fibreIncluse()) loyer = loyer + PRIX_FIBRE;
-        if (assurance) loyer = loyer + PRIX_ASSURANCE;
+        if (options.contains(Option.MENAGE)) loyer = new DecorateurMenage(loyer, tarif.coefMenage());
+        if (options.contains(Option.PARKING)) loyer = new DecorateurParking(loyer);
+        if (options.contains(Option.LAVERIE)) loyer = new DecorateurLaverie(loyer);
+        if (options.contains(Option.FIBRE) && !tarif.fibreIncluse()) loyer = new DecorateurFibre(loyer);
+        if (options.contains(Option.ASSURANCE)) loyer = new DecorateurAssurance(loyer);
 
-        // remise selon le profil
-        loyer = FabriqueStrategieProfil.creer(profil).appliquerRemise(loyer, echelon);
+        loyer = new DecorateurRemise(loyer, FabriqueStrategieProfil.creer(profil), echelon);
 
-        return Utils.arrondir(loyer);
+        return Utils.arrondir(loyer.montant());
     }
 
     public double calculerCharges(Logement l) {

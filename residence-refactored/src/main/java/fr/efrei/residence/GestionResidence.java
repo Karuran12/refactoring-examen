@@ -3,6 +3,7 @@ package fr.efrei.residence;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Set;
 import fr.efrei.residence.bail.Bail;
 import fr.efrei.residence.bail.Paiement;
 import fr.efrei.residence.bail.StatutBail;
@@ -14,6 +15,7 @@ import fr.efrei.residence.logement.Logement;
 import fr.efrei.residence.logement.Residence;
 import fr.efrei.residence.logement.TypeLogement;
 import fr.efrei.residence.loyer.CalculateurLoyer;
+import fr.efrei.residence.loyer.Option;
 import fr.efrei.residence.notification.Canal;
 import fr.efrei.residence.notification.CourrierService;
 import fr.efrei.residence.notification.FabriqueCanal;
@@ -91,8 +93,7 @@ public class GestionResidence {
 
     // ------------------------------------------------------------------ attribution
 
-    public Bail attribuerLogement(Etudiant e, TypeLogement typeSouhaite, boolean parking, boolean menage, boolean laverie,
-                                  boolean fibre, boolean assurance, LocalDate dateSignature) {
+    public Bail attribuerLogement(Etudiant e, TypeLogement typeSouhaite, Set<Option> options, LocalDate dateSignature) {
         System.out.println("--- Attribution d'un " + typeSouhaite + " à " + e.getNomComplet());
         StrategieProfil regles = FabriqueStrategieProfil.creer(e.getProfil()); 
         Logement choisi = null;
@@ -103,8 +104,7 @@ public class GestionResidence {
             if (!l.estLibre()) continue;
             if (e.isPmr() && !l.estAccessiblePMR()) continue;
 
-            double loyerCandidat = calculateur.calculerLoyer(l, e.getProfil(), e.getEchelonBourse(), parking, menage,
-                    laverie, fibre, assurance);
+            double loyerCandidat = calculateur.calculerLoyer(l, e.getProfil(), e.getEchelonBourse(), options);
             double chargesCandidat = calculateur.calculerCharges(l);
             double total = loyerCandidat + chargesCandidat;
 
@@ -131,11 +131,7 @@ public class GestionResidence {
         compteurBail++;
         String id = "BAIL-" + String.format("%03d", compteurBail);
         Bail b = new Bail(id, e, choisi, dateSignature);
-        b.parking = parking;
-        b.menage = menage;
-        b.laverie = laverie;
-        b.fibre = fibre;
-        b.assurance = assurance;
+        b.setOptions(options);
         b.setLoyerHorsCharges(loyer);
         b.setCharges(charges);
 

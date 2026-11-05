@@ -1,10 +1,7 @@
-package fr.efrei.residence.loyer;
+package fr.efrei.residence.loyer.tarif;
 
 import fr.efrei.residence.logement.Logement;
 
-/**
- * Studio : prix au m², avec un loyer minimum.
- */
 public class TarifStudio extends StrategieTarif {
 
     private static final double PRIX_M2_STUDIO = 14;

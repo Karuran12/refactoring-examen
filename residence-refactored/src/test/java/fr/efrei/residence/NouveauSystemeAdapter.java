@@ -28,6 +28,7 @@ import fr.efrei.residence.contrat.TypeLogement;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -93,10 +94,8 @@ public class NouveauSystemeAdapter implements SystemeResidence {
         if (l == null) {
             return OptionalDouble.empty();
         }
-        Set<Option> o = d.options();
         return OptionalDouble.of(new CalculateurLoyer().calculerLoyer(l, versNotreProfil(d.profil()), d.echelonBourse(),
-                o.contains(Option.PARKING), o.contains(Option.MENAGE), o.contains(Option.LAVERIE),
-                o.contains(Option.FIBRE), o.contains(Option.ASSURANCE)));
+                versNosOptions(d.options())));
     }
 
     @Override
@@ -105,9 +104,7 @@ public class NouveauSystemeAdapter implements SystemeResidence {
         if (e == null) {
             return Optional.empty();
         }
-        Set<Option> o = d.options();
-        Bail b = gestion.attribuerLogement(e, versNotreType(d.type()), o.contains(Option.PARKING), o.contains(Option.MENAGE), 
-                o.contains(Option.LAVERIE), o.contains(Option.FIBRE), o.contains(Option.ASSURANCE), d.dateSignature());
+        Bail b = gestion.attribuerLogement(e, versNotreType(d.type()), versNosOptions(d.options()), d.dateSignature());
         return Optional.ofNullable(b).map(Bail::getId);
     }
 
@@ -188,7 +185,7 @@ public class NouveauSystemeAdapter implements SystemeResidence {
         return fr.efrei.residence.logement.TypeLogement.valueOf(type.name());
     }
 
-    private static TypeLogement versTypeDuContrat(fr.efrei.residence.logement.TypeLogement type) {        
+    private static TypeLogement versTypeDuContrat(fr.efrei.residence.logement.TypeLogement type) {
         return TypeLogement.valueOf(type.name());
     }
 
@@ -197,10 +194,18 @@ public class NouveauSystemeAdapter implements SystemeResidence {
     }
 
     private static fr.efrei.residence.notification.Canal versNotreCanal(Canal canal) {
-        return fr.efrei.residence.notification.Canal.valueOf(canal.name());    
+        return fr.efrei.residence.notification.Canal.valueOf(canal.name());
     }
 
     private static StatutBail versStatutDuContrat(fr.efrei.residence.bail.StatutBail statut) {
         return StatutBail.valueOf(statut.name());
+    }
+
+    private static Set<fr.efrei.residence.loyer.Option> versNosOptions(Set<Option> options) {
+        Set<fr.efrei.residence.loyer.Option> nosOptions = EnumSet.noneOf(fr.efrei.residence.loyer.Option.class);
+        for (Option option : options) {
+            nosOptions.add(fr.efrei.residence.loyer.Option.valueOf(option.name()));
+        }
+        return nosOptions;
     }
 }
