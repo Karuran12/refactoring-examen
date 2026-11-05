@@ -14,17 +14,13 @@ public class EmailService implements CanalNotification {
     public List<String[]> getJournal() { return journal; }
 
     public boolean envoyer(String destinataire, String sujet, String corps) {
-        try {
-            if (!Utils.emailValide(destinataire)) {
-                throw new Exception("Adresse invalide");
-            }
-            System.out.println("[EMAIL] " + EXPEDITEUR + " -> " + destinataire + " | " + sujet);
-            System.out.println("        " + corps);
-            journal.add(new String[]{destinataire, sujet, corps});
-            return true;
-        } catch (Exception e) {
+        if (!Utils.emailValide(destinataire)) {
             return false;
         }
+        System.out.println("[EMAIL] " + EXPEDITEUR + " -> " + destinataire + " | " + sujet);
+        System.out.println("        " + corps);
+        journal.add(new String[]{destinataire, sujet, corps});
+        return true;
     }
 
     @Override

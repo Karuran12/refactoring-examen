@@ -5,7 +5,6 @@ import java.time.YearMonth;
 import fr.efrei.residence.bail.Bail;
 import fr.efrei.residence.bail.Paiement;
 import fr.efrei.residence.bail.StatutBail;
-import fr.efrei.residence.logement.Colocation;
 import fr.efrei.residence.logement.Logement;
 import fr.efrei.residence.notification.Notificateur;
 import fr.efrei.residence.persistance.BailRepository;
@@ -114,12 +113,7 @@ public class ServiceBail {
         }
 
         Logement l = b.getLogement();
-        if (l instanceof Colocation) {
-            l.retirerColocataire(b.getEtudiant());
-            l.nettoyerPartiesCommunes();
-        } else {
-            l.liberer(b.getEtudiant());
-        }
+        l.libererApresSortie(b.getEtudiant());
 
         double impayes = b.soldeDu > 0 ? b.soldeDu : 0;
         double restitution = b.getCaution() - retenuesDegats - impayes;
@@ -155,11 +149,7 @@ public class ServiceBail {
         }
 
         Logement l = b.getLogement();
-        if (l instanceof Colocation) {
-            l.retirerColocataire(b.getEtudiant());
-        } else {
-            l.liberer(b.getEtudiant());
-        }
+        l.liberer(b.getEtudiant());
         
         b.setStatut(StatutBail.ANNULE);
         baux.mettreAJourBail(b);

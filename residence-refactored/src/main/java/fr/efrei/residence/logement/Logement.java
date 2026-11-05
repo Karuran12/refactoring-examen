@@ -2,7 +2,7 @@ package fr.efrei.residence.logement;
 
 import fr.efrei.residence.etudiant.Etudiant;
 
-public abstract class Logement implements ILogement {
+public abstract class Logement {
 
     public static final int REZ_DE_CHAUSSEE = 0;
     private static final String BATIMENT_AVEC_ASCENSEUR = "A";
@@ -27,14 +27,21 @@ public abstract class Logement implements ILogement {
     public double getSurface() { return surface; }
     public int getEtage() { return etage; }
     public boolean isMeuble() { return meuble; }
-    public Etudiant getOccupant() { return occupant; }
+
+    public int getNombrePlaces() {
+        return 1;
+    }
+
+    public int getNombreOccupants() {
+        return occupant == null ? 0 : 1;
+    }
 
     public boolean estLibre() {
         return occupant == null;
     }
 
-    public int getNombreOccupants() {
-        return occupant == null ? 0 : 1;
+    public double getSurfaceBalcon() {
+        return 0;
     }
 
     public boolean estAccessiblePMR() {
@@ -51,5 +58,9 @@ public abstract class Logement implements ILogement {
 
     public void liberer(Etudiant e) {
         occupant = null;
+    }
+
+    public void libererApresSortie(Etudiant e) {
+        liberer(e);
     }
 }

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.Set;
 import fr.efrei.residence.bail.Bail;
 import fr.efrei.residence.etudiant.Etudiant;
-import fr.efrei.residence.logement.Colocation;
 import fr.efrei.residence.logement.Logement;
 import fr.efrei.residence.logement.Residence;
 import fr.efrei.residence.logement.TypeLogement;
@@ -65,11 +64,7 @@ public class ServiceAttribution {
             return null;
         }
 
-        if (choisi instanceof Colocation) {
-            choisi.ajouterColocataire(e);
-        } else {
-            choisi.loger(e);
-        }
+        choisi.loger(e);
 
         compteurBail++;
         String id = "BAIL-" + String.format("%03d", compteurBail);

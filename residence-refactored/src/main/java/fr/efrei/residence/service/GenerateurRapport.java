@@ -47,11 +47,9 @@ public class GenerateurRapport {
         double surfaceBalcons = 0;
 
         for (Logement l : residence.getLogements()) {
-            try {
-                surfaceBalcons += l.getSurfaceBalcon();
-            } catch (UnsupportedOperationException ex) {
-            }
+            surfaceBalcons += l.getSurfaceBalcon();
         }
+        
         r += "Balcons      : " + surfaceBalcons + " m²" + "\n";
 
         double loyersMensuels = 0;

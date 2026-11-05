@@ -4,7 +4,6 @@ import fr.efrei.residence.bail.Bail;
 import fr.efrei.residence.bail.FormateurQuittance;
 import fr.efrei.residence.etudiant.Etudiant;
 import fr.efrei.residence.etudiant.Profil;
-import fr.efrei.residence.logement.Colocation;
 import fr.efrei.residence.logement.Logement;
 import fr.efrei.residence.logement.Residence;
 import fr.efrei.residence.loyer.CalculateurLoyer;
@@ -89,13 +88,8 @@ public class NouveauSystemeAdapter implements SystemeResidence {
         if (l == null) {
             return Optional.empty();
         }
-        int occupants;
-        if (l instanceof Colocation) {
-            occupants = l.getColocataires().size();
-        } else {
-            occupants = l.estLibre() ? 0 : 1;
-        }
-        return Optional.of(new EtatLogement(l.getNumero(), versTypeDuContrat(l.getType()), l.getNombrePlaces(), occupants, l.estAccessiblePMR()));
+        return Optional.of(new EtatLogement(l.getNumero(), versTypeDuContrat(l.getType()), l.getNombrePlaces(),
+        l.getNombreOccupants(), l.estAccessiblePMR()));
     }
 
     @Override
