@@ -10,10 +10,10 @@ public class EmailService implements CanalNotification {
     public static final String SMTP_HOST = "smtp.campusvert.fr";
     public static final String EXPEDITEUR = "gestion@campusvert.fr";
 
-    // garde une trace des emails envoyés (demandé par l'administration)
-    public static List<String[]> journal = new ArrayList<String[]>();
+    private final List<String[]> journal = new ArrayList<String[]>();
+    public List<String[]> getJournal() { return journal; }
 
-    public static boolean envoyer(String destinataire, String sujet, String corps) {
+    public boolean envoyer(String destinataire, String sujet, String corps) {
         try {
             if (!Utils.emailValide(destinataire)) {
                 throw new Exception("Adresse invalide");

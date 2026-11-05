@@ -11,8 +11,11 @@ public class SmsService implements CanalNotification {
     private static final int LONGUEUR_MAX_SMS = 160;
     private static final String POINTS_DE_SUSPENSION = "...";
 
-    public static int compteurSms = 0;
-    public static List<String[]> journal = new ArrayList<String[]>();
+    private int compteurSms = 0;
+    private final List<String[]> journal = new ArrayList<String[]>();
+
+    public int getCompteurSms() { return compteurSms; }
+    public List<String[]> getJournal() { return journal; }
 
     public void envoyerSms(String numero, String message) {
         if (numero == null || numero.length() < LONGUEUR_MIN_NUMERO) {

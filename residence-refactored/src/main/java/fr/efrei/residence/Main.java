@@ -3,18 +3,38 @@ package fr.efrei.residence;
 import java.time.LocalDate;
 import java.util.EnumSet;
 import fr.efrei.residence.bail.Bail;
+import fr.efrei.residence.bail.FormateurQuittance;
 import fr.efrei.residence.etudiant.Etudiant;
 import fr.efrei.residence.etudiant.Profil;
 import fr.efrei.residence.logement.Residence;
 import fr.efrei.residence.logement.TypeLogement;
+import fr.efrei.residence.loyer.CalculateurLoyer;
 import fr.efrei.residence.loyer.Option;
 import fr.efrei.residence.notification.Canal;
+import fr.efrei.residence.notification.FabriqueCanal;
+import fr.efrei.residence.notification.Notificateur;
+import fr.efrei.residence.persistance.Database;
+import fr.efrei.residence.service.GenerateurRapport;
+import fr.efrei.residence.service.ServiceAttribution;
+import fr.efrei.residence.service.ServiceBail;
+import fr.efrei.residence.service.ServiceInscription;
+import fr.efrei.residence.service.ServiceRelance;
 
 public class Main {
 
     public static void main(String[] args) {
-        Residence.initialiser();
-        GestionResidence gestion = new GestionResidence();
+        Database db = new Database();
+        Residence residence = new Residence();
+        FabriqueCanal canaux = new FabriqueCanal();
+        Notificateur notificateur = new Notificateur(canaux);
+        GestionResidence gestion = new GestionResidence(
+                                                        residence,
+                                                        new ServiceInscription(db),
+                                                        new ServiceAttribution(residence, new CalculateurLoyer(), db, notificateur),
+                                                        new ServiceBail(db, notificateur),
+                                                        new ServiceRelance(db, notificateur),
+                                                        new GenerateurRapport(residence, db, canaux),
+                                                        new FormateurQuittance());
 
         gestion.ajouterLogement(TypeLogement.STUDIO, "C002", 16, 0, false, 0);
         TypeLogement duplex = TypeLogement.depuisCode("DUPLEX");
@@ -76,8 +96,8 @@ public class Main {
         gestion.payerLoyer(bC.getId(), "2026-10", LocalDate.of(2026, 10, 1), 1000);
 
         System.out.println();
-        System.out.println(bD.genererQuittance("2026-09"));
-        System.out.println(bA.genererQuittance("2026-10"));
+        System.out.println(gestion.genererQuittance(bD, "2026-09"));
+        System.out.println(gestion.genererQuittance(bA, "2026-10"));
 
         System.out.println();
         gestion.relancerImpayes();

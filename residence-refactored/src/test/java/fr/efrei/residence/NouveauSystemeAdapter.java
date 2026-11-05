@@ -1,16 +1,21 @@
 package fr.efrei.residence;
 
 import fr.efrei.residence.bail.Bail;
+import fr.efrei.residence.bail.FormateurQuittance;
 import fr.efrei.residence.etudiant.Etudiant;
 import fr.efrei.residence.etudiant.Profil;
 import fr.efrei.residence.logement.Colocation;
 import fr.efrei.residence.logement.Logement;
 import fr.efrei.residence.logement.Residence;
 import fr.efrei.residence.loyer.CalculateurLoyer;
-import fr.efrei.residence.notification.CourrierService;
-import fr.efrei.residence.notification.EmailService;
-import fr.efrei.residence.notification.SmsService;
+import fr.efrei.residence.notification.FabriqueCanal;
+import fr.efrei.residence.notification.Notificateur;
 import fr.efrei.residence.persistance.Database;
+import fr.efrei.residence.service.GenerateurRapport;
+import fr.efrei.residence.service.ServiceAttribution;
+import fr.efrei.residence.service.ServiceBail;
+import fr.efrei.residence.service.ServiceInscription;
+import fr.efrei.residence.service.ServiceRelance;
 
 import fr.efrei.residence.contrat.Canal;
 import fr.efrei.residence.contrat.DemandeAttribution;
@@ -43,21 +48,26 @@ import java.util.Set;
 public class NouveauSystemeAdapter implements SystemeResidence {
 
     private GestionResidence gestion;
+    private FabriqueCanal canaux;
+    private Database db;
+    private Residence residence;
+    private CalculateurLoyer calculateur;
 
     @Override
     public void reinitialiser() {
-        Database.getInstance();
-        Database.etudiants.clear();
-        Database.baux.clear();
-        EmailService.journal.clear();
-        SmsService.journal.clear();
-        CourrierService.journal.clear();
-        SmsService.compteurSms = 0;
-        CourrierService.totalAffranchissement = 0;
-        Etudiant.compteur = 0;
-        GestionResidence.compteurBail = 0;
-        Residence.initialiser();
-        gestion = new GestionResidence();
+        db = new Database();
+        residence = new Residence();
+        calculateur = new CalculateurLoyer();
+        canaux = new FabriqueCanal();
+        Notificateur notificateur = new Notificateur(canaux);
+        gestion = new GestionResidence(
+                                        residence,
+                                        new ServiceInscription(db),
+                                        new ServiceAttribution(residence, calculateur, db, notificateur),
+                                        new ServiceBail(db, notificateur),
+                                        new ServiceRelance(db, notificateur),
+                                        new GenerateurRapport(residence, db, canaux),
+                                        new FormateurQuittance());
     }
 
     @Override
@@ -75,7 +85,7 @@ public class NouveauSystemeAdapter implements SystemeResidence {
 
     @Override
     public Optional<EtatLogement> logement(String numero) {
-        Logement l = Residence.trouver(numero);
+        Logement l = residence.trouver(numero);
         if (l == null) {
             return Optional.empty();
         }
@@ -90,17 +100,16 @@ public class NouveauSystemeAdapter implements SystemeResidence {
 
     @Override
     public OptionalDouble devisLoyer(DemandeDevis d) {
-        Logement l = Residence.trouver(d.numeroLogement());
+        Logement l = residence.trouver(d.numeroLogement());
         if (l == null) {
             return OptionalDouble.empty();
         }
-        return OptionalDouble.of(new CalculateurLoyer().calculerLoyer(l, versNotreProfil(d.profil()), d.echelonBourse(),
-                versNosOptions(d.options())));
+        return OptionalDouble.of(calculateur.calculerLoyer(l, versNotreProfil(d.profil()), d.echelonBourse(), versNosOptions(d.options())));
     }
 
     @Override
     public Optional<String> attribuer(DemandeAttribution d) {
-        Etudiant e = etudiant(d.refEtudiant());
+        Etudiant e = db.trouverEtudiantParId(d.refEtudiant());
         if (e == null) {
             return Optional.empty();
         }
@@ -110,7 +119,7 @@ public class NouveauSystemeAdapter implements SystemeResidence {
 
     @Override
     public Optional<EtatBail> consulter(String idBail) {
-        Bail b = Database.baux.get(idBail);
+        Bail b = db.trouverBail(idBail);
         if (b == null) {
             return Optional.empty();
         }
@@ -146,7 +155,7 @@ public class NouveauSystemeAdapter implements SystemeResidence {
 
     @Override
     public Optional<String> quittance(String idBail, YearMonth mois) {
-        return Optional.ofNullable(Database.baux.get(idBail)).map(b -> b.genererQuittance(mois.toString()));
+        return Optional.ofNullable(db.trouverBail(idBail)).map(b -> gestion.genererQuittance(b, mois.toString()));
     }
 
     @Override
@@ -162,23 +171,16 @@ public class NouveauSystemeAdapter implements SystemeResidence {
     @Override
     public List<Notification> notifications() {
         List<Notification> notifications = new ArrayList<>();
-        for (String[] email : EmailService.journal) {
+        for (String[] email : canaux.getEmail().getJournal()) {
             notifications.add(new Notification(Canal.EMAIL, email[0], email[1]));
         }
-        for (String[] sms : SmsService.journal) {
+        for (String[] sms : canaux.getSms().getJournal()) {
             notifications.add(new Notification(Canal.SMS, sms[0], sms[1]));
         }
-        for (String[] courrier : CourrierService.journal) {
+        for (String[] courrier : canaux.getCourrier().getJournal()) {
             notifications.add(new Notification(Canal.COURRIER, courrier[0], courrier[1]));
         }
         return notifications;
-    }
-
-    private static Etudiant etudiant(String ref) {
-        for (Etudiant e : Database.etudiants.values()) {
-            if (e.getId().equals(ref)) return e;
-        }
-        return null;
     }
 
     private static fr.efrei.residence.logement.TypeLogement versNotreType(TypeLogement type) {

@@ -1,15 +1,20 @@
 package fr.efrei.residence.notification;
 
-/**
- * Fabrique des canaux : seul endroit qui sait quel service créer pour chaque canal.
- */
 public class FabriqueCanal {
 
-    public static CanalNotification creer(Canal canal) {
+    private final EmailService email = new EmailService();
+    private final SmsService sms = new SmsService();
+    private final CourrierService courrier = new CourrierService();
+
+    public CanalNotification pour(Canal canal) {
         return switch (canal) {
-            case EMAIL -> new EmailService();
-            case SMS -> new SmsService();
-            case COURRIER -> new CourrierService();
+            case EMAIL -> email;
+            case SMS -> sms;
+            case COURRIER -> courrier;
         };
     }
+
+    public EmailService getEmail() { return email; }
+    public SmsService getSms() { return sms; }
+    public CourrierService getCourrier() { return courrier; }
 }
